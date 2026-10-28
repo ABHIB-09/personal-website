@@ -1,0 +1,535 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Skills — AI/ML Engineer{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* ====================== LIGHT THEME SKILLS PAGE ====================== */
+    :root {
+        --bg: #f4f2ee;
+        --bg-soft: #faf9f6;
+        --paper: #ffffff;
+        --ink: #111113;
+        --ink-2: #202024;
+        --muted: #77767d;
+        --muted-2: #9b999f;
+        --black: #09090b;
+        --blue: #5367e8;
+        --blue-soft: #e8ebff;
+        --line: rgba(17,17,19,.10);
+        --radius: 24px;
+        --max: 1240px;
+    }
+
+    body {
+        background: var(--bg);
+        color: var(--ink);
+        font-family: "DM Sans", sans-serif;
+    }
+
+    .container {
+        width: min(calc(100% - 48px), var(--max));
+        margin: 0 auto;
+    }
+
+    /* ====================== HERO ====================== */
+    .skills-hero {
+        padding: 160px 0 70px;
+        text-align: center;
+    }
+
+    .skills-hero .eyebrow {
+        display: inline-block;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 18px;
+        opacity: 0;
+        animation: fadeUp 0.6s ease forwards 0.1s;
+    }
+
+    .skills-hero h1 {
+        font-family: "Manrope", sans-serif;
+        font-size: clamp(40px, 6vw, 68px);
+        font-weight: 700;
+        letter-spacing: -0.05em;
+        line-height: 1.05;
+        margin: 0 0 18px;
+    }
+
+    .skills-hero h1 .animate-text {
+        display: inline-block;
+        opacity: 0;
+        transform: translateY(30px);
+        animation: textArrive 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .skills-hero h1 .delay-1 { animation-delay: 0.15s; }
+    .skills-hero h1 .delay-2 { animation-delay: 0.28s; }
+    .skills-hero h1 .delay-3 { animation-delay: 0.40s; }
+
+    @keyframes textArrive {
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes fadeUp {
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .skills-hero h1 em {
+        font-family: "Playfair Display", serif;
+        font-style: italic;
+        font-weight: 500;
+        color: var(--blue);
+    }
+
+    .skills-hero p {
+        max-width: 560px;
+        margin: 0 auto;
+        font-size: 17px;
+        line-height: 1.7;
+        color: var(--muted);
+        opacity: 0;
+        animation: fadeUp 0.7s ease forwards 0.55s;
+    }
+
+    /* ====================== SKILLS SECTIONS ====================== */
+    .skills-section {
+        padding-bottom: 100px;
+    }
+
+    .skill-category {
+        margin-bottom: 56px;
+        opacity: 0;
+        transform: translateY(40px);
+        animation: categoryArrive 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .skill-category:nth-child(1) { animation-delay: 0.1s; }
+    .skill-category:nth-child(2) { animation-delay: 0.2s; }
+    .skill-category:nth-child(3) { animation-delay: 0.3s; }
+    .skill-category:nth-child(4) { animation-delay: 0.4s; }
+    .skill-category:nth-child(5) { animation-delay: 0.5s; }
+    .skill-category:nth-child(6) { animation-delay: 0.6s; }
+    .skill-category:nth-child(7) { animation-delay: 0.7s; }
+    .skill-category:nth-child(8) { animation-delay: 0.8s; }
+
+    @keyframes categoryArrive {
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .category-header {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-bottom: 22px;
+    }
+
+    .category-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 14px;
+        background: var(--blue-soft);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        flex-shrink: 0;
+    }
+
+    .category-title {
+        font-family: "Manrope", sans-serif;
+        font-size: 22px;
+        font-weight: 700;
+        letter-spacing: -0.03em;
+        color: var(--ink);
+        margin: 0;
+    }
+
+    .category-count {
+        font-size: 13px;
+        color: var(--muted);
+        font-weight: 500;
+        margin-left: 6px;
+    }
+
+    /* ====================== 3D SKILL PILLS ====================== */
+    .skill-cloud {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        perspective: 1000px;
+    }
+
+    .skill-pill {
+        position: relative;
+        padding: 12px 20px;
+        background: #ffffff;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--ink);
+        cursor: default;
+        transform-style: preserve-3d;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        box-shadow: 
+            0 4px 12px rgba(0,0,0,0.04),
+            0 1px 3px rgba(0,0,0,0.06);
+        opacity: 0;
+        transform: translateY(20px) rotateX(15deg);
+        animation: pillArrive 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    /* Staggered delays for pills */
+    .skill-pill:nth-child(1)  { animation-delay: 0.05s; }
+    .skill-pill:nth-child(2)  { animation-delay: 0.10s; }
+    .skill-pill:nth-child(3)  { animation-delay: 0.15s; }
+    .skill-pill:nth-child(4)  { animation-delay: 0.20s; }
+    .skill-pill:nth-child(5)  { animation-delay: 0.25s; }
+    .skill-pill:nth-child(6)  { animation-delay: 0.30s; }
+    .skill-pill:nth-child(7)  { animation-delay: 0.35s; }
+    .skill-pill:nth-child(8)  { animation-delay: 0.40s; }
+    .skill-pill:nth-child(9)  { animation-delay: 0.45s; }
+    .skill-pill:nth-child(10) { animation-delay: 0.50s; }
+    .skill-pill:nth-child(11) { animation-delay: 0.55s; }
+    .skill-pill:nth-child(12) { animation-delay: 0.60s; }
+    .skill-pill:nth-child(13) { animation-delay: 0.65s; }
+    .skill-pill:nth-child(14) { animation-delay: 0.70s; }
+    .skill-pill:nth-child(15) { animation-delay: 0.75s; }
+    .skill-pill:nth-child(n+16) { animation-delay: 0.80s; }
+
+    @keyframes pillArrive {
+        to {
+            opacity: 1;
+            transform: translateY(0) rotateX(0);
+        }
+    }
+
+    /* Live 3D Hover Effect */
+    .skill-pill:hover {
+        transform: translateY(-8px) rotateX(8deg) rotateY(-6deg) scale(1.05);
+        background: var(--blue-soft);
+        border-color: rgba(83, 103, 232, 0.35);
+        color: var(--blue);
+        box-shadow: 
+            0 20px 40px rgba(83, 103, 232, 0.18),
+            0 8px 16px rgba(0,0,0,0.08),
+            inset 0 1px 0 rgba(255,255,255,0.8);
+        z-index: 10;
+    }
+
+    /* Subtle shine on hover */
+    .skill-pill::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: 999px;
+        background: linear-gradient(
+            135deg,
+            rgba(255,255,255,0.4) 0%,
+            transparent 50%,
+            transparent 100%
+        );
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        pointer-events: none;
+    }
+
+    .skill-pill:hover::before {
+        opacity: 1;
+    }
+
+    /* Category card wrapper for depth */
+    .category-card {
+        background: rgba(255, 255, 255, 0.65);
+        backdrop-filter: blur(12px);
+        border: 1px solid var(--line);
+        border-radius: 24px;
+        padding: 32px;
+        transition: all 0.4s ease;
+    }
+
+    .category-card:hover {
+        border-color: rgba(83, 103, 232, 0.2);
+        box-shadow: 0 20px 50px rgba(0,0,0,0.06);
+        transform: translateY(-4px);
+    }
+
+    /* ====================== RESPONSIVE ====================== */
+    @media (max-width: 900px) {
+        .skills-hero {
+            padding: 140px 0 50px;
+        }
+        .category-card {
+            padding: 24px;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .skills-hero h1 {
+            font-size: 34px;
+        }
+        .category-title {
+            font-size: 19px;
+        }
+        .skill-pill {
+            padding: 10px 16px;
+            font-size: 13px;
+        }
+        .category-icon {
+            width: 42px;
+            height: 42px;
+            font-size: 18px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div style="background: var(--bg); min-height: 100vh;">
+
+    <!-- Hero -->
+    <section class="skills-hero">
+        <div class="container">
+            <div class="eyebrow">Technical Arsenal</div>
+            <h1>
+                <span class="animate-text delay-1">Skills that</span>
+                <span class="animate-text delay-2"> <em>power</em></span>
+                <span class="animate-text delay-3"> intelligence</span>
+            </h1>
+            <p>
+                A curated set of technologies I use to design, build and ship production-grade AI systems.
+            </p>
+        </div>
+    </section>
+
+    <!-- Skills Sections -->
+    <section class="skills-section">
+        <div class="container">
+
+            <!-- 1. GenAI & LLMs -->
+            <div class="skill-category">
+                <div class="category-card">
+                    <div class="category-header">
+                        <div class="category-icon">🧠</div>
+                        <div>
+                            <h2 class="category-title">
+                                GenAI & LLMs
+                                <span class="category-count">· 15 skills</span>
+                            </h2>
+                        </div>
+                    </div>
+                    <div class="skill-cloud">
+                        <span class="skill-pill">LLMs</span>
+                        <span class="skill-pill">Generative AI</span>
+                        <span class="skill-pill">RAG Pipelines</span>
+                        <span class="skill-pill">Prompt Engineering</span>
+                        <span class="skill-pill">Agentic AI</span>
+                        <span class="skill-pill">LangChain</span>
+                        <span class="skill-pill">LangGraph</span>
+                        <span class="skill-pill">Hugging Face</span>
+                        <span class="skill-pill">OpenAI API</span>
+                        <span class="skill-pill">AWS Bedrock</span>
+                        <span class="skill-pill">Embeddings</span>
+                        <span class="skill-pill">Vector Databases</span>
+                        <span class="skill-pill">Fine-tuning (LoRA/PEFT)</span>
+                        <span class="skill-pill">PyTorch</span>
+                        <span class="skill-pill">TensorFlow</span>
+                        <span class="skill-pill">Chain-of-Thought</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. Agent Frameworks -->
+            <div class="skill-category">
+                <div class="category-card">
+                    <div class="category-header">
+                        <div class="category-icon">🤖</div>
+                        <div>
+                            <h2 class="category-title">
+                                Agent Frameworks
+                                <span class="category-count">· 8 skills</span>
+                            </h2>
+                        </div>
+                    </div>
+                    <div class="skill-cloud">
+                        <span class="skill-pill">LangGraph StateGraph</span>
+                        <span class="skill-pill">Multi-Agent Orchestration</span>
+                        <span class="skill-pill">CrewAI</span>
+                        <span class="skill-pill">AgentOps</span>
+                        <span class="skill-pill">Classifier / Extractor Agents</span>
+                        <span class="skill-pill">Decision Agents</span>
+                        <span class="skill-pill">Tool-Calling Agents</span>
+                        <span class="skill-pill">Compliance Agents</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. Backend -->
+            <div class="skill-category">
+                <div class="category-card">
+                    <div class="category-header">
+                        <div class="category-icon">⚙️</div>
+                        <div>
+                            <h2 class="category-title">
+                                Backend
+                                <span class="category-count">· 8 skills</span>
+                            </h2>
+                        </div>
+                    </div>
+                    <div class="skill-cloud">
+                        <span class="skill-pill">Python</span>
+                        <span class="skill-pill">Django</span>
+                        <span class="skill-pill">FastAPI</span>
+                        <span class="skill-pill">REST APIs</span>
+                        <span class="skill-pill">Celery</span>
+                        <span class="skill-pill">Async Processing</span>
+                        <span class="skill-pill">Microservices</span>
+                        <span class="skill-pill">Transaction Processing APIs</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. Cloud & MLOps -->
+            <div class="skill-category">
+                <div class="category-card">
+                    <div class="category-header">
+                        <div class="category-icon">☁️</div>
+                        <div>
+                            <h2 class="category-title">
+                                Cloud & MLOps
+                                <span class="category-count">· 11 skills</span>
+                            </h2>
+                        </div>
+                    </div>
+                    <div class="skill-cloud">
+                        <span class="skill-pill">AWS SageMaker</span>
+                        <span class="skill-pill">AWS Lambda</span>
+                        <span class="skill-pill">AWS S3</span>
+                        <span class="skill-pill">AWS Bedrock</span>
+                        <span class="skill-pill">Kubernetes (K8s)</span>
+                        <span class="skill-pill">Helm</span>
+                        <span class="skill-pill">Docker</span>
+                        <span class="skill-pill">CI/CD</span>
+                        <span class="skill-pill">Model Deployment & Monitoring</span>
+                        <span class="skill-pill">Serverless Architecture</span>
+                        <span class="skill-pill">MLOps</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. Computer Vision -->
+            <div class="skill-category">
+                <div class="category-card">
+                    <div class="category-header">
+                        <div class="category-icon">👁️</div>
+                        <div>
+                            <h2 class="category-title">
+                                Computer Vision
+                                <span class="category-count">· 5 skills</span>
+                            </h2>
+                        </div>
+                    </div>
+                    <div class="skill-cloud">
+                        <span class="skill-pill">OpenCV</span>
+                        <span class="skill-pill">Tesseract OCR</span>
+                        <span class="skill-pill">Image Processing</span>
+                        <span class="skill-pill">Object Detection</span>
+                        <span class="skill-pill">Document Intelligence</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 6. Databases -->
+            <div class="skill-category">
+                <div class="category-card">
+                    <div class="category-header">
+                        <div class="category-icon">🗄️</div>
+                        <div>
+                            <h2 class="category-title">
+                                Databases
+                                <span class="category-count">· 8 skills</span>
+                            </h2>
+                        </div>
+                    </div>
+                    <div class="skill-cloud">
+                        <span class="skill-pill">PostgreSQL</span>
+                        <span class="skill-pill">MySQL</span>
+                        <span class="skill-pill">SQLite3</span>
+                        <span class="skill-pill">SQL Server</span>
+                        <span class="skill-pill">JSONField</span>
+                        <span class="skill-pill">Vector DBs</span>
+                        <span class="skill-pill">Query Optimisation</span>
+                        <span class="skill-pill">Audit Trail Schemas</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 7. Data & Viz -->
+            <div class="skill-category">
+                <div class="category-card">
+                    <div class="category-header">
+                        <div class="category-icon">📊</div>
+                        <div>
+                            <h2 class="category-title">
+                                Data & Visualization
+                                <span class="category-count">· 8 skills</span>
+                            </h2>
+                        </div>
+                    </div>
+                    <div class="skill-cloud">
+                        <span class="skill-pill">NumPy</span>
+                        <span class="skill-pill">Pandas</span>
+                        <span class="skill-pill">Matplotlib</span>
+                        <span class="skill-pill">Seaborn</span>
+                        <span class="skill-pill">Tableau</span>
+                        <span class="skill-pill">Power BI</span>
+                        <span class="skill-pill">ReportLab</span>
+                        <span class="skill-pill">XlsxWriter</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 8. Other -->
+            <div class="skill-category">
+                <div class="category-card">
+                    <div class="category-header">
+                        <div class="category-icon">🛠️</div>
+                        <div>
+                            <h2 class="category-title">
+                                Other Tools & Techniques
+                                <span class="category-count">· 9 skills</span>
+                            </h2>
+                        </div>
+                    </div>
+                    <div class="skill-cloud">
+                        <span class="skill-pill">Git</span>
+                        <span class="skill-pill">Linux</span>
+                        <span class="skill-pill">QR Code Systems</span>
+                        <span class="skill-pill">Geolocation APIs</span>
+                        <span class="skill-pill">python-pptx</span>
+                        <span class="skill-pill">Logistic Regression</span>
+                        <span class="skill-pill">KNN</span>
+                        <span class="skill-pill">PyTorch</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+</div>
+{% endblock %}

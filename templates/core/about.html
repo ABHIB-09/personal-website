@@ -1,0 +1,480 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}About Me — AI/ML Engineer{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* ====================== LIGHT THEME ABOUT PAGE ====================== */
+
+    :root {
+        --bg: #f4f2ee;
+        --bg-soft: #faf9f6;
+        --paper: #ffffff;
+        --ink: #111113;
+        --ink-2: #202024;
+        --muted: #77767d;
+        --muted-2: #9b999f;
+        --black: #09090b;
+        --blue: #5367e8;
+        --blue-soft: #e8ebff;
+        --line: rgba(17,17,19,.10);
+        --radius: 24px;
+        --max: 1240px;
+    }
+
+    body {
+        background: var(--bg);
+        color: var(--ink);
+        font-family: "DM Sans", sans-serif;
+    }
+
+    .container {
+        width: min(calc(100% - 48px), var(--max));
+        margin: 0 auto;
+    }
+
+    /* ====================== HERO ====================== */
+    .about-hero {
+        padding: 160px 0 80px;
+        text-align: center;
+    }
+
+    .about-hero .eyebrow {
+        display: inline-block;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 20px;
+        opacity: 0;
+        animation: fadeUp 0.6s ease forwards 0.1s;
+    }
+
+    .about-hero h1 {
+        font-family: "Manrope", sans-serif;
+        font-size: clamp(42px, 6vw, 72px);
+        font-weight: 700;
+        letter-spacing: -0.05em;
+        line-height: 1.05;
+        margin: 0 0 20px;
+    }
+
+    /* Letter arrival animation */
+    .about-hero h1 .animate-text {
+        display: inline-block;
+        opacity: 0;
+        transform: translateY(30px);
+        animation: textArrive 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .about-hero h1 .delay-1 { animation-delay: 0.15s; }
+    .about-hero h1 .delay-2 { animation-delay: 0.25s; }
+    .about-hero h1 .delay-3 { animation-delay: 0.35s; }
+    .about-hero h1 .delay-4 { animation-delay: 0.45s; }
+
+    @keyframes textArrive {
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes fadeUp {
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .about-hero h1 em {
+        font-family: "Playfair Display", serif;
+        font-style: italic;
+        font-weight: 500;
+        color: var(--blue);
+    }
+
+    .about-hero p {
+        max-width: 620px;
+        margin: 0 auto;
+        font-size: 18px;
+        line-height: 1.7;
+        color: var(--muted);
+        opacity: 0;
+        animation: fadeUp 0.7s ease forwards 0.6s;
+    }
+
+    /* ====================== MAIN GRID ====================== */
+    .about-grid {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 80px;
+        padding: 40px 0 100px;
+        align-items: start;
+    }
+
+    /* Left Content */
+    .about-content h2 {
+        font-family: "Manrope", sans-serif;
+        font-size: 28px;
+        font-weight: 700;
+        letter-spacing: -0.03em;
+        margin: 0 0 16px;
+        color: var(--ink);
+    }
+
+    .about-content h2:not(:first-child) {
+        margin-top: 48px;
+    }
+
+    .about-content p {
+        font-size: 16px;
+        line-height: 1.8;
+        color: var(--muted);
+        margin-bottom: 18px;
+    }
+
+    .about-content strong {
+        color: var(--ink);
+        font-weight: 600;
+    }
+
+    /* Philosophy List */
+    .philosophy-list {
+        list-style: none;
+        padding: 0;
+        margin: 20px 0 0;
+    }
+
+    .philosophy-list li {
+        position: relative;
+        padding: 12px 0 12px 32px;
+        border-bottom: 1px solid var(--line);
+        color: var(--muted);
+        font-size: 15.5px;
+        line-height: 1.6;
+        transition: all 0.25s ease;
+    }
+
+    .philosophy-list li:last-child {
+        border-bottom: none;
+    }
+
+    .philosophy-list li::before {
+        content: "◆";
+        position: absolute;
+        left: 0;
+        color: var(--blue);
+        font-size: 11px;
+        top: 15px;
+    }
+
+    .philosophy-list li:hover {
+        color: var(--ink);
+        transform: translateX(4px);
+    }
+
+    /* Right Side */
+    .about-sidebar {
+        position: sticky;
+        top: 120px;
+    }
+
+    .profile-card {
+        background: rgba(255, 255, 255, 0.72);
+        backdrop-filter: blur(18px);
+        border: 1px solid var(--line);
+        border-radius: 24px;
+        padding: 32px;
+        margin-bottom: 28px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .profile-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.06);
+    }
+
+    .profile-card .label {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 20px;
+    }
+
+    .fact-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 13px 0;
+        border-bottom: 1px solid var(--line);
+        font-size: 14.5px;
+    }
+
+    .fact-row:last-child {
+        border-bottom: none;
+    }
+
+    .fact-row .key {
+        color: var(--muted);
+    }
+
+    .fact-row .value {
+        font-weight: 600;
+        color: var(--ink);
+        text-align: right;
+    }
+
+    .fact-row .value.highlight {
+        color: var(--blue);
+    }
+
+    .fact-row .value.available {
+        color: #35b866;
+    }
+
+    /* Skills */
+    .skill-cloud {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 8px;
+    }
+
+    .skill-pill {
+        padding: 8px 14px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.7);
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--ink);
+        transition: all 0.25s ease;
+    }
+
+    .skill-pill:hover {
+        background: var(--blue-soft);
+        border-color: rgba(83, 103, 232, 0.25);
+        color: var(--blue);
+        transform: translateY(-2px);
+    }
+
+    /* CTA Card */
+    .cta-card {
+        background: var(--black);
+        color: #fff;
+        border-radius: 24px;
+        padding: 36px 32px;
+        text-align: center;
+        transition: transform 0.3s ease;
+    }
+
+    .cta-card:hover {
+        transform: translateY(-4px);
+    }
+
+    .cta-card h3 {
+        font-family: "Manrope", sans-serif;
+        font-size: 22px;
+        font-weight: 700;
+        margin: 0 0 10px;
+    }
+
+    .cta-card p {
+        color: rgba(255, 255, 255, 0.55);
+        font-size: 14.5px;
+        margin-bottom: 24px;
+        line-height: 1.6;
+    }
+
+    .btn-dark {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 14px 28px;
+        background: #fff;
+        color: var(--black);
+        border-radius: 999px;
+        font-size: 14px;
+        font-weight: 700;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .btn-dark:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    /* ====================== RESPONSIVE ====================== */
+    @media (max-width: 900px) {
+        .about-grid {
+            grid-template-columns: 1fr;
+            gap: 50px;
+        }
+
+        .about-sidebar {
+            position: static;
+        }
+
+        .about-hero {
+            padding: 140px 0 50px;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .about-hero h1 {
+            font-size: 36px;
+        }
+
+        .about-content h2 {
+            font-size: 24px;
+        }
+
+        .profile-card,
+        .cta-card {
+            padding: 24px;
+        }
+    }
+</style>
+{% endblock %}
+
+
+{% block content %}
+<div style="background: var(--bg); min-height: 100vh;">
+
+    <!-- Hero -->
+    <section class="about-hero">
+        <div class="container">
+            <div class="eyebrow">About Me</div>
+            <h1>
+                <span class="animate-text delay-1">Engineering</span>
+                <span class="animate-text delay-2"> <em>intelligence</em></span><br>
+                <span class="animate-text delay-3">into</span>
+                <span class="animate-text delay-4"> software.</span>
+            </h1>
+            <p>
+                AI/ML Engineer building production-grade systems that deliver measurable impact.
+            </p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <section>
+        <div class="container">
+            <div class="about-grid">
+
+                <!-- Left Column -->
+                <div class="about-content">
+
+                    <h2>Who I Am</h2>
+                    <p>
+                        I'm an AI/ML and Generative AI Engineer with a passion for building 
+                        <strong>production-grade systems</strong> that deliver measurable impact. 
+                        My work spans RAG systems, Agentic AI applications, intelligent automation, 
+                        and machine learning solutions.
+                    </p>
+                    <p>
+                        I believe that AI systems should not only be intelligent but also 
+                        <strong>trustworthy</strong>, <strong>reliable</strong>, and grounded in real-world utility. 
+                        Every system I build is designed with production readiness and user value in mind.
+                    </p>
+
+                    <h2>My Engineering Philosophy</h2>
+                    <p>
+                        I approach engineering as a combination of scientific rigor and creative problem-solving. 
+                        My work is guided by principles of reliability, performance, and thoughtful design.
+                    </p>
+
+                    <ul class="philosophy-list">
+                        <li>Build systems that solve real problems</li>
+                        <li>Focus on measurable impact and results</li>
+                        <li>Design for production reliability</li>
+                        <li>Leverage AI to augment human capability</li>
+                        <li>Prioritize trustworthiness and transparency</li>
+                    </ul>
+
+                    <h2>Currently Exploring</h2>
+                    <ul class="philosophy-list">
+                        <li>Advanced RAG architectures for enterprise knowledge</li>
+                        <li>Multi-agent AI systems and orchestration</li>
+                        <li>AI reliability and trustworthiness</li>
+                        <li>Production LLM applications</li>
+                    </ul>
+
+                </div>
+
+                <!-- Right Column -->
+                <div class="about-sidebar">
+
+                    <!-- Quick Facts -->
+                    <div class="profile-card">
+                        <div class="label">Quick Facts</div>
+
+                        <div class="fact-row">
+                            <span class="key">Title</span>
+                            <span class="value">
+                                {% if profile %}{{ profile.professional_title }}{% else %}Generative AI Engineer{% endif %}
+                            </span>
+                        </div>
+
+                        <div class="fact-row">
+                            <span class="key">Experience</span>
+                            <span class="value">
+                                <span class="highlight">{% if profile %}{{ profile.years_experience }}{% else %}2.5{% endif %}+</span> years
+                            </span>
+                        </div>
+
+                        <div class="fact-row">
+                            <span class="key">Location</span>
+                            <span class="value">
+                                {% if profile %}{{ profile.location|default:"Remote" }}{% else %}Remote{% endif %}
+                            </span>
+                        </div>
+
+                        <div class="fact-row">
+                            <span class="key">Availability</span>
+                            <span class="value available">
+                                {% if profile %}{{ profile.availability|default:"Available" }}{% else %}Available for AI / ML opportunities{% endif %}
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Skills -->
+                    <div class="profile-card">
+                        <div class="label">Core Skills</div>
+                        <div class="skill-cloud">
+                            <span class="skill-pill">Python</span>
+                            <span class="skill-pill">Django</span>
+                            <span class="skill-pill">FastAPI</span>
+                            <span class="skill-pill">RAG</span>
+                            <span class="skill-pill">LangChain</span>
+                            <span class="skill-pill">LangGraph</span>
+                            <span class="skill-pill">Agentic AI</span>
+                            <span class="skill-pill">AWS</span>
+                            <span class="skill-pill">Docker</span>
+                            <span class="skill-pill">Kubernetes</span>
+                            <span class="skill-pill">PyTorch</span>
+                            <span class="skill-pill">NLP</span>
+                            <span class="skill-pill">Computer Vision</span>
+                        </div>
+                    </div>
+
+                    <!-- CTA -->
+                    <div class="cta-card">
+                        <h3>Let's Connect</h3>
+                        <p>Interested in collaborating or have a project in mind?</p>
+                        <a href="{% url 'core:contact' %}" class="btn-dark">
+                            Get in Touch →
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+</div>
+{% endblock %}

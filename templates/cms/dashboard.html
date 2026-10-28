@@ -1,0 +1,93 @@
+{% extends 'cms/base.html' %}
+{% load static %}
+
+{% block title %}Dashboard - CMS{% endblock %}
+
+{% block cms_content %}
+<div class="cms-header">
+    <h1>Dashboard</h1>
+    <div>
+        <span style="color: var(--color-text-light);">Welcome back, {{ request.user.get_full_name|default:request.user.username }}</span>
+    </div>
+</div>
+
+<div class="cms-stats">
+    <div class="cms-stat-card">
+        <div class="cms-stat-number">{{ project_published_count }}/{{ project_count }}</div>
+        <div class="cms-stat-label">Projects Published</div>
+    </div>
+    <div class="cms-stat-card">
+        <div class="cms-stat-number">{{ research_published_count }}/{{ research_count }}</div>
+        <div class="cms-stat-label">Research Published</div>
+    </div>
+    <div class="cms-stat-card">
+        <div class="cms-stat-number">{{ blog_published_count }}/{{ blog_count }}</div>
+        <div class="cms-stat-label">Blog Posts Published</div>
+    </div>
+    <div class="cms-stat-card">
+        <div class="cms-stat-number">{{ unread_messages }}</div>
+        <div class="cms-stat-label">Unread Messages</div>
+    </div>
+    <div class="cms-stat-card">
+        <div class="cms-stat-number">{{ experience_count }}</div>
+        <div class="cms-stat-label">Experience Entries</div>
+    </div>
+    <div class="cms-stat-card">
+        <div class="cms-stat-number">{{ media_count }}</div>
+        <div class="cms-stat-label">Media Files</div>
+    </div>
+</div>
+
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+    <div>
+        <h3 style="margin-bottom: 1rem;">Recent Projects</h3>
+        {% if recent_projects %}
+        <ul style="list-style: none; padding: 0;">
+            {% for project in recent_projects %}
+            <li style="padding: 0.5rem 0; border-bottom: 1px solid var(--color-border); display: flex; justify-content: space-between; align-items: center;">
+                <span>{{ project.title }}</span>
+                <span class="status-badge {% if project.is_published %}published{% else %}draft{% endif %}">
+                    {{ project.is_published|yesno:"Published,Draft" }}
+                </span>
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p style="color: var(--color-text-light);">No projects yet.</p>
+        {% endif %}
+        <a href="{% url 'cms:project_add' %}" class="btn btn-sm btn-primary" style="margin-top: 1rem;">+ Add Project</a>
+    </div>
+    
+    <div>
+        <h3 style="margin-bottom: 1rem;">Recent Messages</h3>
+        {% if recent_messages %}
+        <ul style="list-style: none; padding: 0;">
+            {% for msg in recent_messages %}
+            <li style="padding: 0.5rem 0; border-bottom: 1px solid var(--color-border);">
+                <strong>{{ msg.name }}</strong>
+                <span style="color: var(--color-text-light); font-size: 0.85rem;">- {{ msg.created_at|date:"M d, Y" }}</span>
+                <span class="status-badge {{ msg.status }}">
+                    {{ msg.get_status_display }}
+                </span>
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p style="color: var(--color-text-light);">No messages yet.</p>
+        {% endif %}
+        <a href="{% url 'cms:message_list' %}" class="btn btn-sm btn-secondary" style="margin-top: 1rem;">View All Messages</a>
+    </div>
+</div>
+
+<div style="margin-top: 2rem; padding: 1.5rem; background: var(--color-background); border-radius: var(--radius-md);">
+    <h3 style="margin-bottom: 0.5rem;">Quick Actions</h3>
+    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+        <a href="{% url 'cms:project_add' %}" class="btn btn-sm btn-primary">Add Project</a>
+        <a href="{% url 'cms:experience_add' %}" class="btn btn-sm btn-secondary">Add Experience</a>
+        <a href="{% url 'cms:blog_add' %}" class="btn btn-sm btn-secondary">Write Article</a>
+        <a href="{% url 'cms:research_add' %}" class="btn btn-sm btn-secondary">Add Research</a>
+        <a href="{% url 'cms:media_upload' %}" class="btn btn-sm btn-secondary">Upload Media</a>
+        <a href="{% url 'cms:profile_update' %}" class="btn btn-sm btn-outline">Update Profile</a>
+    </div>
+</div>
+{% endblock %}

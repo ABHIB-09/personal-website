@@ -1,0 +1,598 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ project.title }} — AI/ML Engineer{% endblock %}
+{% block description %}{{ project.short_description }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* ====================== LIGHT THEME PROJECT DETAIL ====================== */
+
+    :root {
+        --bg: #f4f2ee;
+        --bg-soft: #faf9f6;
+        --paper: #ffffff;
+        --ink: #111113;
+        --ink-2: #202024;
+        --muted: #77767d;
+        --muted-2: #9b999f;
+        --black: #09090b;
+        --blue: #5367e8;
+        --blue-soft: #e8ebff;
+        --line: rgba(17,17,19,.10);
+        --radius: 24px;
+        --max: 1240px;
+    }
+
+    body {
+        background: var(--bg);
+        color: var(--ink);
+        font-family: "DM Sans", sans-serif;
+    }
+
+    .container {
+        width: min(calc(100% - 48px), var(--max));
+        margin: 0 auto;
+    }
+
+    /* ====================== HERO ====================== */
+    .project-hero {
+        padding: 150px 0 60px;
+    }
+
+    .project-hero .eyebrow {
+        display: inline-block;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 18px;
+    }
+
+    .project-hero h1 {
+        font-family: "Manrope", sans-serif;
+        font-size: clamp(36px, 5.5vw, 64px);
+        font-weight: 700;
+        letter-spacing: -0.045em;
+        line-height: 1.05;
+        margin: 0 0 20px;
+        max-width: 900px;
+    }
+
+    .project-hero .subtitle {
+        font-size: 18px;
+        line-height: 1.7;
+        color: var(--muted);
+        max-width: 680px;
+        margin-bottom: 28px;
+    }
+
+    .tech-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .tech-tag {
+        padding: 7px 16px;
+        background: var(--blue-soft);
+        color: var(--blue);
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    /* ====================== CONTENT ====================== */
+    .project-content {
+        padding: 20px 0 100px;
+    }
+
+    .content-card {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 24px;
+        padding: 36px 40px;
+        margin-bottom: 28px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.03);
+    }
+
+    .content-card h2 {
+        font-family: "Manrope", sans-serif;
+        font-size: 22px;
+        font-weight: 700;
+        letter-spacing: -0.03em;
+        margin: 0 0 18px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .content-card h2 .icon {
+        font-size: 20px;
+    }
+
+    .content-card p {
+        font-size: 16px;
+        line-height: 1.8;
+        color: var(--muted);
+        margin-bottom: 14px;
+    }
+
+    .content-card p:last-child {
+        margin-bottom: 0;
+    }
+
+    .content-card strong {
+        color: var(--ink);
+        font-weight: 600;
+    }
+
+    /* Thumbnail */
+    .project-thumbnail {
+        border-radius: 20px;
+        overflow: hidden;
+        border: 1px solid var(--line);
+        margin-bottom: 28px;
+    }
+
+    .project-thumbnail img {
+        width: 100%;
+        display: block;
+    }
+
+    /* Tech Stack */
+    .tech-stack {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 8px;
+    }
+
+    .tech-item {
+        padding: 10px 20px;
+        background: var(--bg-soft);
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--ink);
+        transition: all 0.25s ease;
+    }
+
+    .tech-item:hover {
+        background: var(--blue-soft);
+        border-color: rgba(83,103,232,0.25);
+        color: var(--blue);
+    }
+
+    /* Metrics */
+    .metrics-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+
+    .metric-item {
+        background: var(--bg-soft);
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 22px 18px;
+        text-align: center;
+    }
+
+    .metric-item .value {
+        font-family: "Manrope", sans-serif;
+        font-size: 26px;
+        font-weight: 800;
+        color: var(--blue);
+        letter-spacing: -0.03em;
+    }
+
+    /* Gallery */
+    .gallery-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 20px;
+    }
+
+    .gallery-item {
+        border-radius: 16px;
+        overflow: hidden;
+        border: 1px solid var(--line);
+        background: var(--bg-soft);
+        transition: all 0.3s ease;
+    }
+
+    .gallery-item:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.08);
+    }
+
+    .gallery-item img {
+        width: 100%;
+        aspect-ratio: 16/10;
+        object-fit: cover;
+        display: block;
+    }
+
+    .gallery-item .caption {
+        padding: 12px 16px;
+        font-size: 13.5px;
+        color: var(--muted);
+    }
+
+    /* Video */
+    .video-container {
+        aspect-ratio: 16/9;
+        background: #111;
+        border-radius: 16px;
+        overflow: hidden;
+        border: 1px solid var(--line);
+    }
+
+    .video-container iframe,
+    .video-container video {
+        width: 100%;
+        height: 100%;
+        border: none;
+    }
+
+    /* Action Buttons */
+    .action-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 14px;
+        margin-top: 10px;
+        padding-top: 28px;
+        border-top: 1px solid var(--line);
+    }
+
+    .btn-primary {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 14px 28px;
+        background: var(--black);
+        color: #fff;
+        border-radius: 999px;
+        font-size: 14px;
+        font-weight: 700;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        background: #1b1b20;
+        transform: translateY(-2px);
+        box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+    }
+
+    .btn-secondary {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 14px 28px;
+        background: #fff;
+        color: var(--ink);
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        font-size: 14px;
+        font-weight: 700;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .btn-secondary:hover {
+        border-color: rgba(17,17,19,0.25);
+        transform: translateY(-2px);
+    }
+
+    .btn-outline {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 14px 28px;
+        background: transparent;
+        color: var(--muted);
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        font-size: 14px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .btn-outline:hover {
+        color: var(--ink);
+        border-color: rgba(17,17,19,0.3);
+    }
+
+    /* Related Projects */
+    .related-section {
+        margin-top: 60px;
+        padding-top: 40px;
+        border-top: 1px solid var(--line);
+    }
+
+    .related-section h3 {
+        font-family: "Manrope", sans-serif;
+        font-size: 24px;
+        font-weight: 700;
+        margin: 0 0 8px;
+    }
+
+    .related-section .subtitle {
+        color: var(--muted);
+        font-size: 15px;
+        margin-bottom: 28px;
+    }
+
+    .related-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 20px;
+    }
+
+    .related-card {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 24px;
+        text-decoration: none;
+        color: inherit;
+        transition: all 0.3s ease;
+        display: block;
+    }
+
+    .related-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.07);
+        border-color: rgba(83,103,232,0.2);
+    }
+
+    .related-card h4 {
+        font-family: "Manrope", sans-serif;
+        font-size: 17px;
+        font-weight: 700;
+        margin: 0 0 8px;
+        color: var(--ink);
+    }
+
+    .related-card p {
+        font-size: 14px;
+        color: var(--muted);
+        line-height: 1.6;
+        margin: 0 0 12px;
+    }
+
+    .related-card .arrow {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--blue);
+    }
+
+    /* ====================== RESPONSIVE ====================== */
+    @media (max-width: 768px) {
+        .project-hero {
+            padding: 130px 0 40px;
+        }
+
+        .content-card {
+            padding: 28px 24px;
+        }
+
+        .action-buttons {
+            flex-direction: column;
+        }
+
+        .btn-primary,
+        .btn-secondary,
+        .btn-outline {
+            justify-content: center;
+        }
+
+        .metrics-grid {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .metrics-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .project-hero h1 {
+            font-size: 32px;
+        }
+    }
+</style>
+{% endblock %}
+
+
+{% block content %}
+<div style="background: var(--bg); min-height: 100vh;">
+
+    <!-- Hero -->
+    <section class="project-hero">
+        <div class="container">
+            <div class="eyebrow">Project Case Study</div>
+            <h1>{{ project.title }}</h1>
+            <p class="subtitle">{{ project.short_description }}</p>
+
+            <div class="tech-tags">
+                {% for tech in project.technologies_list %}
+                <span class="tech-tag">{{ tech }}</span>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <!-- Content -->
+    <section class="project-content">
+        <div class="container">
+
+            <!-- Thumbnail -->
+            {% if project.thumbnail %}
+            <div class="project-thumbnail">
+                <img src="{{ project.thumbnail.url }}" alt="{{ project.title }}">
+            </div>
+            {% endif %}
+
+            <!-- Overview -->
+            <div class="content-card">
+                <h2><span class="icon">📋</span> Overview</h2>
+                <p>{{ project.description|linebreaks }}</p>
+            </div>
+
+            <!-- Problem -->
+            {% if project.problem %}
+            <div class="content-card">
+                <h2><span class="icon">⚠️</span> Problem</h2>
+                <p>{{ project.problem|linebreaks }}</p>
+            </div>
+            {% endif %}
+
+            <!-- Solution -->
+            {% if project.solution %}
+            <div class="content-card">
+                <h2><span class="icon">💡</span> Solution</h2>
+                <p>{{ project.solution|linebreaks }}</p>
+            </div>
+            {% endif %}
+
+            <!-- My Role -->
+            {% if project.my_role %}
+            <div class="content-card">
+                <h2><span class="icon">👤</span> My Role</h2>
+                <p>{{ project.my_role|linebreaks }}</p>
+            </div>
+            {% endif %}
+
+            <!-- Architecture -->
+            {% if project.architecture %}
+            <div class="content-card">
+                <h2><span class="icon">🏗️</span> Architecture</h2>
+                <p>{{ project.architecture|linebreaks }}</p>
+            </div>
+            {% endif %}
+
+            <!-- Technology Stack -->
+            <div class="content-card">
+                <h2><span class="icon">⚡</span> Technology Stack</h2>
+                <div class="tech-stack">
+                    {% for tech in project.technologies_list %}
+                    <span class="tech-item">{{ tech }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Gallery -->
+            {% if images %}
+            <div class="content-card">
+                <h2><span class="icon">🖼️</span> Gallery</h2>
+                <div class="gallery-grid">
+                    {% for image in images %}
+                    <div class="gallery-item">
+                        <img src="{{ image.image.url }}" alt="{{ image.alt_text|default:project.title }}" loading="lazy">
+                        {% if image.caption %}
+                        <div class="caption">{{ image.caption }}</div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Video -->
+            {% if project.video_url or project.video_file %}
+            <div class="content-card">
+                <h2><span class="icon">🎬</span> Demo Video</h2>
+                <div class="video-container">
+                    {% if project.video_url %}
+                        {% if 'youtube.com' in project.video_url or 'youtu.be' in project.video_url %}
+                            {% with project.video_url|cut:"watch?v="|cut:"https://youtu.be/" as video_id %}
+                            <iframe src="https://www.youtube.com/embed/{{ video_id }}" allowfullscreen></iframe>
+                            {% endwith %}
+                        {% elif 'vimeo.com' in project.video_url %}
+                            {% with project.video_url|cut:"https://vimeo.com/" as video_id %}
+                            <iframe src="https://player.vimeo.com/video/{{ video_id }}" allowfullscreen></iframe>
+                            {% endwith %}
+                        {% else %}
+                            <div style="display:flex;align-items:center;justify-content:center;height:100%;color:#fff;">
+                                <a href="{{ project.video_url }}" target="_blank" style="color:#60a5fa;">Watch Video →</a>
+                            </div>
+                        {% endif %}
+                    {% elif project.video_file %}
+                    <video controls preload="metadata" {% if project.video_thumbnail %}poster="{{ project.video_thumbnail.url }}"{% endif %}>
+                        <source src="{{ project.video_file.url }}" type="video/mp4">
+                    </video>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Results & Impact -->
+            <div class="content-card">
+                <h2><span class="icon">📊</span> Results & Impact</h2>
+
+                {% if project.metrics %}
+                <div class="metrics-grid">
+                    {% for metric in project.metrics.splitlines %}
+                        {% if metric.strip %}
+                        <div class="metric-item">
+                            <div class="value">{{ metric.strip }}</div>
+                        </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                {% if project.business_impact %}
+                <p>{{ project.business_impact|linebreaks }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                {% if project.github_url %}
+                <a href="{{ project.github_url }}" target="_blank" rel="noopener" class="btn-primary">
+                    GitHub →
+                </a>
+                {% endif %}
+
+                {% if project.live_demo_url %}
+                <a href="{{ project.live_demo_url }}" target="_blank" rel="noopener" class="btn-secondary">
+                    Live Demo →
+                </a>
+                {% endif %}
+
+                <a href="{% url 'portfolio:projects' %}" class="btn-outline">
+                    ← Back to Projects
+                </a>
+            </div>
+
+            <!-- Related Projects -->
+            {% if related_projects %}
+            <div class="related-section">
+                <h3>Related Projects</h3>
+                <p class="subtitle">Explore more systems I’ve built.</p>
+
+                <div class="related-grid">
+                    {% for related in related_projects %}
+                    <a href="{{ related.get_absolute_url }}" class="related-card">
+                        <h4>{{ related.title }}</h4>
+                        <p>{{ related.short_description|truncatechars:90 }}</p>
+                        <span class="arrow">View Project →</span>
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+        </div>
+    </section>
+
+</div>
+{% endblock %}

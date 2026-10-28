@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Studio — Design &amp; Development, Available for Freelance</title>
+<meta name="description" content="Portfolio and freelance studio site with a live 3D background.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,380;9..144,480;9..144,560&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg:#F1F0F5;
+    --panel:#FFFFFF;
+    --ink:#15151B;
+    --ink-soft:#5A5A66;
+    --black:#0D0D10;
+    --black-soft:#1E1E24;
+    --accent:#3245E0;
+    --accent-soft:#E7E9FB;
+    --line:rgba(13,13,16,0.10);
+    --radius:14px;
+  }
+
+  *{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Space Grotesk', sans-serif;
+    font-size:16px;
+    line-height:1.5;
+    overflow-x:hidden;
+  }
+  h1,h2,h3{
+    font-family:'Fraunces', serif;
+    font-weight:480;
+    margin:0;
+    letter-spacing:-0.01em;
+  }
+  a{ color:inherit; text-decoration:none; }
+  img{ max-width:100%; display:block; }
+
+  ::selection{ background:var(--accent); color:#fff; }
+
+  /* ---------- Live 3D background canvas ---------- */
+  #bg-canvas{
+    position:fixed;
+    inset:0;
+    width:100vw;
+    height:100vh;
+    z-index:0;
+    pointer-events:none;
+  }
+
+  /* ---------- Layout shell ---------- */
+  .wrap{
+    position:relative;
+    z-index:1;
+    max-width:1180px;
+    margin:0 auto;
+    padding:0 32px;
+  }
+  section{ position:relative; z-index:1; }
+
+  /* ---------- 3D floating nav ---------- */
+  .nav-stage{
+    position:fixed;
+    top:24px;
+    left:50%;
+    transform:translateX(-50%);
+    z-index:50;
+    perspective:900px;
+  }
+  .nav-tabs{
+    display:flex;
+    gap:6px;
+    padding:6px;
+    background:var(--black);
+    border-radius:999px;
+    box-shadow:0 18px 40px rgba(13,13,16,0.28);
+    transform-style:preserve-3d;
+    transition:transform .15s ease-out;
+  }
+  .nav-tab{
+    position:relative;
+    padding:11px 20px;
+    color:rgba(255,255,255,0.72);
+    font-size:14px;
+    font-weight:500;
+    border-radius:999px;
+    cursor:pointer;
+    transform-style:preserve-3d;
+    transition:transform .25s cubic-bezier(.2,.8,.2,1), color .2s ease, background .2s ease;
+    white-space:nowrap;
+  }
+  .nav-tab:hover, .nav-tab.active{
+    color:#fff;
+    background:var(--black-soft);
+  }
+  .nav-tab .depth{
+    position:absolute;
+    inset:0;
+    border-radius:999px;
+    background:#000;
+    transform:translateZ(-8px);
+    opacity:0;
+    transition:opacity .2s ease;
+  }
+  .nav-tab:hover .depth{ opacity:.5; }
+
+  @media (max-width:760px){
+    .nav-tabs{ transform:none !important; }
+    .nav-tab{ padding:9px 13px; font-size:12.5px; }
+  }
+
+  /* ---------- Hero ---------- */
+  .hero{
+    min-height:100svh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    padding-top:120px;
+    padding-bottom:80px;
+  }
+  .hero-kicker{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    width:fit-content;
+    font-size:13.5px;
+    color:var(--ink-soft);
+    background:var(--panel);
+    border:1px solid var(--line);
+    padding:7px 14px;
+    border-radius:999px;
+    margin-bottom:28px;
+  }
+  .hero-kicker .dot{
+    width:7px; height:7px; border-radius:50%;
+    background:#2FBF5A;
+    box-shadow:0 0 0 4px rgba(47,191,90,0.15);
+  }
+  .hero h1{
+    font-size:clamp(40px, 7vw, 84px);
+    line-height:1.02;
+    max-width:14ch;
+    color:var(--ink);
+  }
+  .hero h1 em{
+    font-style:italic;
+    color:var(--accent);
+  }
+  .hero p.lede{
+    margin-top:26px;
+    max-width:46ch;
+    font-size:18px;
+    color:var(--ink-soft);
+  }
+  .hero-actions{
+    margin-top:40px;
+    display:flex;
+    gap:14px;
+    flex-wrap:wrap;
+  }
+  .btn{
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    padding:14px 24px;
+    border-radius:999px;
+    font-size:15px;
+    font-weight:500;
+    cursor:pointer;
+    border:1px solid transparent;
+  }
+  .btn-primary{ background:var(--black); color:#fff; }
+  .btn-primary:hover{ background:var(--black-soft); }
+  .btn-ghost{ background:transparent; color:var(--ink); border-color:var(--line); }
+  .btn-ghost:hover{ border-color:var(--ink); }
+
+  .hero-meta{
+    margin-top:88px;
+    display:flex;
+    gap:48px;
+    flex-wrap:wrap;
+  }
+  .hero-meta div span{ display:block; }
+  .hero-meta .num{ font-family:'Fraunces', serif; font-size:30px; }
+  .hero-meta .label{ font-size:13px; color:var(--ink-soft); margin-top:2px; }
+
+  /* ---------- Section heads ---------- */
+  .section-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    gap:24px;
+    margin-bottom:44px;
+    flex-wrap:wrap;
+  }
+  .section-head h2{ font-size:clamp(30px,4vw,44px); }
+  .section-head p{ color:var(--ink-soft); max-width:38ch; margin-top:10px; }
+
+  section.pad{ padding:110px 0; }
+
+  /* ---------- Work / project cards with real 3D tilt ---------- */
+  .work-grid{
+    display:grid;
+    grid-template-columns:repeat(2, 1fr);
+    gap:22px;
+  }
+  @media (max-width:760px){ .work-grid{ grid-template-columns:1fr; } }
+
+  .card{
+    perspective:1000px;
+  }
+  .card-face{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:30px;
+    transform-style:preserve-3d;
+    transition:transform .12s ease-out, box-shadow .25s ease;
+    will-change:transform;
+    height:100%;
+  }
+  .card-face:hover{
+    box-shadow:0 30px 60px rgba(13,13,16,0.14);
+  }
+  .card-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    transform:translateZ(30px);
+  }
+  .card-index{
+    font-family:'Fraunces', serif;
+    font-size:14px;
+    color:var(--ink-soft);
+  }
+  .card-tag{
+    font-size:12px;
+    color:var(--accent);
+    background:var(--accent-soft);
+    padding:5px 11px;
+    border-radius:999px;
+  }
+  .card h3{
+    margin-top:26px;
+    font-size:24px;
+    transform:translateZ(30px);
+  }
+  .card p{
+    margin-top:10px;
+    color:var(--ink-soft);
+    font-size:14.5px;
+    transform:translateZ(20px);
+  }
+  .card-link{
+    margin-top:22px;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    font-size:14px;
+    font-weight:500;
+    transform:translateZ(20px);
+  }
+
+  /* ---------- Services ---------- */
+  .services-grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:20px;
+  }
+  @media (max-width:900px){ .services-grid{ grid-template-columns:1fr; } }
+  .service{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:28px;
+  }
+  .service .n{
+    font-family:'Fraunces', serif;
+    font-size:34px;
+    color:var(--accent);
+  }
+  .service h3{ margin-top:14px; font-size:19px; }
+  .service p{ margin-top:8px; color:var(--ink-soft); font-size:14px; }
+
+  .avail-banner{
+    margin-top:26px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:24px;
+    background:var(--black);
+    color:#fff;
+    border-radius:var(--radius);
+    padding:30px 34px;
+    flex-wrap:wrap;
+  }
+  .avail-banner .dot{
+    width:9px; height:9px; border-radius:50%;
+    background:#2FBF5A;
+    display:inline-block;
+    margin-right:10px;
+    box-shadow:0 0 0 5px rgba(47,191,90,0.22);
+  }
+  .avail-banner h3{ color:#fff; font-size:21px; }
+  .avail-banner p{ color:rgba(255,255,255,0.65); margin-top:6px; font-size:14px; }
+  .avail-banner .btn-primary{ background:#fff; color:var(--black); }
+  .avail-banner .btn-primary:hover{ background:#eee; }
+
+  /* ---------- About ---------- */
+  .about-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:64px;
+    align-items:start;
+  }
+  @media (max-width:800px){ .about-grid{ grid-template-columns:1fr; gap:32px; } }
+  .about-grid p{ color:var(--ink-soft); margin-top:14px; font-size:15.5px; }
+  .tag-list{
+    display:flex;
+    flex-wrap:wrap;
+    gap:9px;
+    margin-top:24px;
+  }
+  .tag{
+    font-size:13px;
+    padding:8px 14px;
+    border:1px solid var(--line);
+    border-radius:999px;
+    background:var(--panel);
+  }
+
+  /* ---------- Contact ---------- */
+  .contact-box{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:44px;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:48px;
+  }
+  @media (max-width:800px){ .contact-box{ grid-template-columns:1fr; padding:28px; } }
+  .field{ margin-bottom:18px; }
+  .field label{ display:block; font-size:13px; color:var(--ink-soft); margin-bottom:7px; }
+  .field input, .field textarea{
+    width:100%;
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:12px 14px;
+    font-family:inherit;
+    font-size:14.5px;
+    background:#fdfdfd;
+    color:var(--ink);
+  }
+  .field input:focus, .field textarea:focus{
+    outline:2px solid var(--accent);
+    outline-offset:1px;
+  }
+  .field textarea{ resize:vertical; min-height:110px; }
+
+  footer{
+    padding:50px 0 70px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    color:var(--ink-soft);
+    font-size:13.5px;
+    flex-wrap:wrap;
+    gap:12px;
+    border-top:1px solid var(--line);
+  }
+  footer .socials{ display:flex; gap:18px; }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ transition:none !important; animation:none !important; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+
+<!-- 3D floating nav: rotates in real 3D space based on pointer position -->
+<div class="nav-stage" id="navStage">
+  <div class="nav-tabs" id="navTabs">
+    <div class="nav-tab active" data-target="#hero"><span class="depth"></span>Home</div>
+    <div class="nav-tab" data-target="#work"><span class="depth"></span>Work</div>
+    <div class="nav-tab" data-target="#services"><span class="depth"></span>Services</div>
+    <div class="nav-tab" data-target="#about"><span class="depth"></span>About</div>
+    <div class="nav-tab" data-target="#contact"><span class="depth"></span>Contact</div>
+  </div>
+</div>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="wrap">
+    <div class="hero-kicker"><span class="dot"></span>Available for new freelance projects</div>
+    <h1>Digital products, <em>designed</em> and built end to end.</h1>
+    <p class="lede">I'm a designer-developer who builds fast, considered websites, interactive experiences, and small products for founders and teams — from first sketch to shipped code.</p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="#work">See my work</a>
+      <a class="btn btn-ghost" href="#contact">Start a project</a>
+    </div>
+    <div class="hero-meta">
+      <div><span class="num">40+</span><span class="label">Projects shipped</span></div>
+      <div><span class="num">7 yrs</span><span class="label">In practice</span></div>
+      <div><span class="num">12</span><span class="label">Countries worked with</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- WORK -->
+<section class="pad" id="work">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Selected work</h2>
+      <p>A handful of recent projects across product design, front-end builds, and interactive sites.</p>
+    </div>
+    <div class="work-grid">
+
+      <div class="card">
+        <div class="card-face" data-tilt>
+          <div class="card-top"><span class="card-index">01</span><span class="card-tag">Product design</span></div>
+          <h3>Northbound — booking platform</h3>
+          <p>End-to-end redesign of a travel booking flow, cutting checkout time by a third across web and mobile.</p>
+          <span class="card-link">View case study →</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-face" data-tilt>
+          <div class="card-top"><span class="card-index">02</span><span class="card-tag">Front-end build</span></div>
+          <h3>Ferro — brand &amp; site</h3>
+          <p>Full site build for a materials manufacturer, with a configurator tool for custom part orders.</p>
+          <span class="card-link">View case study →</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-face" data-tilt>
+          <div class="card-top"><span class="card-index">03</span><span class="card-tag">Interactive</span></div>
+          <h3>Glass Atlas — data explorer</h3>
+          <p>An interactive mapping tool for public climate data, built for a research nonprofit.</p>
+          <span class="card-link">View case study →</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-face" data-tilt>
+          <div class="card-top"><span class="card-index">04</span><span class="card-tag">Product design</span></div>
+          <h3>Ledgerly — finance dashboard</h3>
+          <p>Design system and dashboard rebuild for a small-business accounting tool, from audit to launch.</p>
+          <span class="card-link">View case study →</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES / FREELANCE -->
+<section class="pad" id="services">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>How I can help</h2>
+      <p>Work with me directly, on a project basis or an ongoing retainer.</p>
+    </div>
+    <div class="services-grid">
+      <div class="service">
+        <div class="n">01</div>
+        <h3>Product &amp; web design</h3>
+        <p>Interfaces, design systems, and marketing sites designed from research through to final screens.</p>
+      </div>
+      <div class="service">
+        <div class="n">02</div>
+        <h3>Front-end development</h3>
+        <p>Fast, accessible, well-structured builds — static sites, web apps, and interactive front ends.</p>
+      </div>
+      <div class="service">
+        <div class="n">03</div>
+        <h3>3D &amp; interactive</h3>
+        <p>Lightweight WebGL scenes and motion for sites that need to feel alive without feeling heavy.</p>
+      </div>
+    </div>
+
+    <div class="avail-banner">
+      <div>
+        <h3><span class="dot"></span>Open for freelance work this quarter</h3>
+        <p>Usually replies within one business day. Project or retainer, both welcome.</p>
+      </div>
+      <a class="btn btn-primary" href="#contact">Get in touch</a>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="pad" id="about">
+  <div class="wrap">
+    <div class="about-grid">
+      <div>
+        <h2>About</h2>
+      </div>
+      <div>
+        <p>I'm an independent designer and developer working with founders, small teams, and studios who need one person who can take a project from a rough idea to something shipped and working.</p>
+        <p>My background sits between visual design and engineering, which means I usually design with the constraints of the build already in mind — fewer surprises, faster timelines.</p>
+        <div class="tag-list">
+          <span class="tag">Product design</span>
+          <span class="tag">Design systems</span>
+          <span class="tag">HTML / CSS / JS</span>
+          <span class="tag">Three.js</span>
+          <span class="tag">React</span>
+          <span class="tag">Python / Django</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="pad" id="contact">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Start a project</h2>
+      <p>Tell me a little about what you need — I'll reply with next steps.</p>
+    </div>
+    <div class="contact-box">
+      <div>
+        <h3 style="font-size:20px;">Let's talk about your project</h3>
+        <p style="color:var(--ink-soft); margin-top:10px; font-size:14.5px;">Prefer email? Reach me directly and I'll get back within a business day.</p>
+        <p style="margin-top:18px; font-size:15px;"><strong>hello@yourstudio.com</strong></p>
+      </div>
+      <form id="contactForm">
+        <div class="field">
+          <label for="name">Name</label>
+          <input type="text" id="name" required>
+        </div>
+        <div class="field">
+          <label for="email">Email</label>
+          <input type="email" id="email" required>
+        </div>
+        <div class="field">
+          <label for="message">Project details</label>
+          <textarea id="message" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center;">Send message</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<div class="wrap">
+  <footer>
+    <div>© <span id="year"></span> Your Studio. All rights reserved.</div>
+    <div class="socials">
+      <a href="#">GitHub</a>
+      <a href="#">LinkedIn</a>
+      <a href="#">Twitter</a>
+    </div>
+  </footer>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r149/three.min.js"></script>
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  /* ---------------------------------------------------
+     1. Nav tabs — real 3D transform, driven by pointer
+  --------------------------------------------------- */
+  const navTabs = document.getElementById('navTabs');
+  let targetRY = 0, targetRX = 0, curRY = 0, curRX = 0;
+
+  window.addEventListener('mousemove', (e) => {
+    const nx = (e.clientX / window.innerWidth) * 2 - 1;   // -1 .. 1
+    const ny = (e.clientY / window.innerHeight) * 2 - 1;  // -1 .. 1
+    targetRY = nx * 14;   // rotateY range
+    targetRX = -ny * 6;   // rotateX range
+  });
+
+  function animateNav(){
+    curRY += (targetRY - curRY) * 0.08;
+    curRX += (targetRX - curRX) * 0.08;
+    navTabs.style.transform = `rotateX(${curRX}deg) rotateY(${curRY}deg)`;
+    requestAnimationFrame(animateNav);
+  }
+  animateNav();
+
+  document.querySelectorAll('.nav-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      document.querySelector(tab.dataset.target)?.scrollIntoView({ behavior:'smooth' });
+    });
+  });
+
+  /* ---------------------------------------------------
+     2. Project cards — 3D tilt that follows the cursor
+  --------------------------------------------------- */
+  document.querySelectorAll('[data-tilt]').forEach(card => {
+    card.addEventListener('mousemove', (e) => {
+      const r = card.getBoundingClientRect();
+      const px = (e.clientX - r.left) / r.width - 0.5;
+      const py = (e.clientY - r.top) / r.height - 0.5;
+      card.style.transform = `rotateY(${px * 10}deg) rotateX(${-py * 10}deg) translateZ(6px)`;
+    });
+    card.addEventListener('mouseleave', () => {
+      card.style.transform = 'rotateY(0deg) rotateX(0deg) translateZ(0px)';
+    });
+  });
+
+  /* ---------------------------------------------------
+     3. Live 3D background scene (Three.js)
+     Light scene, dark low-poly shapes, gentle drift +
+     mouse parallax. Transparent so the page's light
+     background always shows through.
+  --------------------------------------------------- */
+  const canvas = document.getElementById('bg-canvas');
+  const renderer = new THREE.WebGLRenderer({ canvas, alpha:true, antialias:true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setSize(window.innerWidth, window.innerHeight);
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
+  camera.position.set(0, 0, 14);
+
+  const ambient = new THREE.AmbientLight(0xffffff, 0.7);
+  scene.add(ambient);
+  const key = new THREE.DirectionalLight(0xffffff, 0.9);
+  key.position.set(5, 8, 6);
+  scene.add(key);
+
+  const shapeMaterial = new THREE.MeshStandardMaterial({
+    color: 0x0d0d10,
+    roughness: 0.35,
+    metalness: 0.1,
+    flatShading: true
+  });
+  const wireMaterial = new THREE.MeshBasicMaterial({
+    color: 0x3245e0,
+    wireframe: true,
+    transparent: true,
+    opacity: 0.35
+  });
+
+  const geometries = [
+    new THREE.IcosahedronGeometry(1.1, 0),
+    new THREE.TorusGeometry(0.9, 0.28, 8, 32),
+    new THREE.OctahedronGeometry(1.1, 0),
+    new THREE.TetrahedronGeometry(1.2, 0),
+    new THREE.IcosahedronGeometry(0.7, 0)
+  ];
+
+  const shapes = [];
+  const COUNT = 9;
+  for (let i = 0; i < COUNT; i++){
+    const geo = geometries[i % geometries.length];
+    const useWire = i % 3 === 0;
+    const mesh = new THREE.Mesh(geo, useWire ? wireMaterial : shapeMaterial);
+
+    mesh.position.set(
+      (Math.random() - 0.5) * 18,
+      (Math.random() - 0.5) * 11,
+      (Math.random() - 0.5) * 8 - 3
+    );
+    mesh.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, 0);
+    const scale = 0.6 + Math.random() * 1.1;
+    mesh.scale.setScalar(scale);
+
+    mesh.userData.spin = {
+      x: (Math.random() - 0.5) * 0.004,
+      y: (Math.random() - 0.5) * 0.006
+    };
+    mesh.userData.floatSeed = Math.random() * Math.PI * 2;
+    mesh.userData.baseY = mesh.position.y;
+
+    scene.add(mesh);
+    shapes.push(mesh);
+  }
+
+  let mouseX = 0, mouseY = 0;
+  window.addEventListener('mousemove', (e) => {
+    mouseX = (e.clientX / window.innerWidth) * 2 - 1;
+    mouseY = (e.clientY / window.innerHeight) * 2 - 1;
+  });
+
+  window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  });
+
+  const clock = new THREE.Clock();
+  function renderLoop(){
+    const t = clock.getElapsedTime();
+
+    shapes.forEach(mesh => {
+      mesh.rotation.x += mesh.userData.spin.x;
+      mesh.rotation.y += mesh.userData.spin.y;
+      mesh.position.y = mesh.userData.baseY + Math.sin(t * 0.4 + mesh.userData.floatSeed) * 0.35;
+    });
+
+    camera.position.x += (mouseX * 1.4 - camera.position.x) * 0.03;
+    camera.position.y += (-mouseY * 0.9 - camera.position.y) * 0.03;
+    camera.lookAt(0, 0, 0);
+
+    renderer.render(scene, camera);
+    requestAnimationFrame(renderLoop);
+  }
+  renderLoop();
+
+  /* ---------------------------------------------------
+     4. Contact form — placeholder submit handler.
+     Wire this up to your Django view / email service.
+  --------------------------------------------------- */
+  document.getElementById('contactForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    const message = document.getElementById('message').value;
+    const subject = encodeURIComponent('New project inquiry from ' + name);
+    const body = encodeURIComponent(message + '\n\n— ' + name + ' (' + email + ')');
+    window.location.href = `mailto:hello@yourstudio.com?subject=${subject}&body=${body}`;
+  });
+</script>
+
+</body>
+</html>

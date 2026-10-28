@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}CMS Dashboard{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/cms.css' %}">
+    <style>
+        .cms-main {
+            background: #f7fafc;
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <div class="cms-wrapper">
+        <!-- Sidebar -->
+        <aside class="cms-sidebar">
+            <div class="cms-sidebar-brand">
+                <a href="{% url 'cms:dashboard' %}" style="color: white; text-decoration: none;">
+                    CMS<span style="color: var(--color-accent);">.</span>
+                </a>
+            </div>
+            
+            <ul class="cms-sidebar-nav">
+                <li><a href="{% url 'cms:dashboard' %}" class="{% if request.path == '/owner/dashboard/' %}active{% endif %}">
+                    <span class="icon">📊</span> <span>Dashboard</span>
+                </a></li>
+                <li><a href="{% url 'cms:profile_update' %}" class="{% if '/owner/profile/' in request.path %}active{% endif %}">
+                    <span class="icon">👤</span> <span>Profile</span>
+                </a></li>
+                <li><a href="{% url 'cms:project_list' %}" class="{% if '/owner/projects/' in request.path %}active{% endif %}">
+                    <span class="icon">📁</span> <span>Projects</span>
+                </a></li>
+                <li><a href="{% url 'cms:experience_list' %}" class="{% if '/owner/experience/' in request.path %}active{% endif %}">
+                    <span class="icon">💼</span> <span>Experience</span>
+                </a></li>
+                <li><a href="{% url 'cms:skill_list' %}" class="{% if '/owner/skills/' in request.path %}active{% endif %}">
+                    <span class="icon">🔧</span> <span>Skills</span>
+                </a></li>
+                <li><a href="{% url 'cms:education_list' %}" class="{% if '/owner/education/' in request.path %}active{% endif %}">
+                    <span class="icon">🎓</span> <span>Education</span>
+                </a></li>
+                <li><a href="{% url 'cms:certification_list' %}" class="{% if '/owner/certifications/' in request.path %}active{% endif %}">
+                    <span class="icon">📜</span> <span>Certifications</span>
+                </a></li>
+                <li><a href="{% url 'cms:research_list' %}" class="{% if '/owner/research/' in request.path %}active{% endif %}">
+                    <span class="icon">🔬</span> <span>Research</span>
+                </a></li>
+                <li><a href="{% url 'cms:blog_list' %}" class="{% if '/owner/blog/' in request.path %}active{% endif %}">
+                    <span class="icon">✍️</span> <span>Blog</span>
+                </a></li>
+                <li><a href="{% url 'cms:message_list' %}" class="{% if '/owner/messages/' in request.path %}active{% endif %}">
+                    <span class="icon">💬</span> <span>Messages</span>
+                    {% if unread_messages_count %}
+                    <span style="background: var(--color-error); color: white; padding: 0.1rem 0.5rem; border-radius: 12px; font-size: 0.7rem; margin-left: auto;">{{ unread_messages_count }}</span>
+                    {% endif %}
+                </a></li>
+                <li><a href="{% url 'cms:media_library' %}" class="{% if '/owner/media/' in request.path %}active{% endif %}">
+                    <span class="icon">🖼️</span> <span>Media Library</span>
+                </a></li>
+                <li><a href="{% url 'cms:social_link_list' %}" class="{% if '/owner/social-links/' in request.path %}active{% endif %}">
+                    <span class="icon">🔗</span> <span>Social Links</span>
+                </a></li>
+                <li><a href="{% url 'cms:metric_list' %}" class="{% if '/owner/metrics/' in request.path %}active{% endif %}">
+                    <span class="icon">📈</span> <span>Metrics</span>
+                </a></li>
+                <li><a href="{% url 'cms:settings' %}" class="{% if '/owner/settings/' in request.path %}active{% endif %}">
+                    <span class="icon">⚙️</span> <span>Settings</span>
+                </a></li>
+                <li><a href="{% url 'cms:logout' %}">
+                    <span class="icon">🚪</span> <span>Logout</span>
+                </a></li>
+            </ul>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="cms-main">
+            <div style="max-width: 1200px; margin: 0 auto;">
+                {% if messages %}
+                <div style="margin-bottom: 1.5rem;">
+                    {% for message in messages %}
+                    <div style="padding: 0.75rem 1rem; border-radius: var(--radius-sm); background: {% if message.tags == 'success' %}#c6f6d5{% elif message.tags == 'error' %}#fed7d7{% else %}#ebf8ff{% endif %}; color: {% if message.tags == 'success' %}#276749{% elif message.tags == 'error' %}#c53030{% else %}#2a69ac{% endif %};">
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                
+                {% block cms_content %}{% endblock %}
+            </div>
+        </main>
+    </div>
+    
+    <script src="{% static 'js/main.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
