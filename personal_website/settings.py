@@ -20,6 +20,11 @@ DEBUG = False
 
 ALLOWED_HOSTS = [
     'abhishekbedake.pythonanywhere.com',
+    'personal-website-o3nn.onrender.com',
+    'abhishekbedake-o3nn.onrender.com',
+    'localhost',
+    '127.0.0.1',
+    '*',
     
 ]
 
